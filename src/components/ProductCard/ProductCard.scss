@@ -1,0 +1,19 @@
+.product-card {
+  width: 300px;
+  height: 400px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+
+  &__img-container {
+    border: 1px solid black;
+    width: min-content;
+    height: min-content;
+  }
+
+  &__img {
+    width: 150px;
+    height: 200px;
+    object-fit: contain;
+  }
+}
