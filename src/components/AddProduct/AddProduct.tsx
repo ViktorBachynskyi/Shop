@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { addProduct } from '../../api/products';
+import { Modal } from '../Modal/Modal';
+import './AddProduct.scss';
 
 type Props = {
   products: Product[],
   setProducts: (product: Product[]) => void,
 };
 
-export const AddProduct: React.FC<Props> = (props) => {
-  const [showForm, setAddForm] = useState(false);
+export const AddProduct: React.FC<Props> = ({ products, setProducts }) => {
   const [newProduct, setNewProduct] = useState({
     id: 0,
     imageUrl: '',
@@ -19,15 +21,27 @@ export const AddProduct: React.FC<Props> = (props) => {
     weight: '',
     comments: [],
   });
+  const [modalAddForm, setModalAddForm] = useState(false);
 
-  const toggleForm = () => {
-    setAddForm(!showForm);
+  const clearInputs = () => {
+    setNewProduct({
+      id: 0,
+      imageUrl: '',
+      name: '',
+      count: 0,
+      size: {
+        width: '',
+        height: '',
+      },
+      weight: '',
+      comments: [],
+    });
   };
 
   const inputHander = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewProduct({
       ...newProduct,
-      id: props.products.length + 1,
+      id: Math.random(),
       [event.target.name]: event.target.value,
     });
   };
@@ -35,7 +49,7 @@ export const AddProduct: React.FC<Props> = (props) => {
   const inputSizeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewProduct({
       ...newProduct,
-      id: props.products.length + 1,
+      id: Math.random(),
       size: {
         ...newProduct.size,
         [event.target.name]: event.target.value,
@@ -43,26 +57,28 @@ export const AddProduct: React.FC<Props> = (props) => {
     });
   };
 
-  const addProduct = (event: React.ChangeEvent<HTMLFormElement>) => {
+  const addNewProduct = async (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
+    await addProduct(newProduct);
 
-    props.setProducts([...props.products, newProduct]);
-    // eslint-disable-next-line no-console
-    console.log(newProduct);
+    setProducts([...products, newProduct]);
+    clearInputs();
+    setModalAddForm(false);
   };
 
   return (
     <>
       <button
         type="button"
-        onClick={toggleForm}
+        onClick={() => setModalAddForm(true)}
       >
-        {showForm ? 'Close' : 'Add product'}
+        Add product
       </button>
-      {showForm && (
-        <form className="shop__addForm" onSubmit={addProduct}>
-          Product Name:
+      <Modal modalActive={modalAddForm} setModalActive={setModalAddForm}>
+        <form className="add-product-form" onSubmit={addNewProduct}>
+          <span className="add-product-form__input-title">Product Name: </span>
           <input
+            value={newProduct.name}
             name="name"
             type="text"
             placeholder=""
@@ -70,8 +86,9 @@ export const AddProduct: React.FC<Props> = (props) => {
             autoComplete="off"
             onChange={inputHander}
           />
-          ImageUrl:
+          <span className="add-product-form__input-title">ImageUrl: </span>
           <input
+            value={newProduct.imageUrl}
             name="imageUrl"
             type="text"
             placeholder=""
@@ -79,8 +96,9 @@ export const AddProduct: React.FC<Props> = (props) => {
             autoComplete="off"
             onChange={inputHander}
           />
-          Count:
+          <span className="add-product-form__input-title">Count: </span>
           <input
+            value={newProduct.count}
             name="count"
             type="text"
             placeholder=""
@@ -88,8 +106,9 @@ export const AddProduct: React.FC<Props> = (props) => {
             autoComplete="off"
             onChange={inputHander}
           />
-          Width:
+          <span className="add-product-form__input-title">Width: </span>
           <input
+            value={newProduct.size.width}
             name="width"
             type="text"
             placeholder=""
@@ -97,8 +116,9 @@ export const AddProduct: React.FC<Props> = (props) => {
             autoComplete="off"
             onChange={inputSizeHandler}
           />
-          Height:
+          <span className="add-product-form__input-title">Height: </span>
           <input
+            value={newProduct.size.height}
             name="height"
             type="text"
             placeholder=""
@@ -106,8 +126,9 @@ export const AddProduct: React.FC<Props> = (props) => {
             autoComplete="off"
             onChange={inputSizeHandler}
           />
-          Weight:
+          <span className="add-product-form__input-title">Weight: </span>
           <input
+            value={newProduct.weight}
             name="weight"
             type="text"
             placeholder=""
@@ -115,15 +136,14 @@ export const AddProduct: React.FC<Props> = (props) => {
             autoComplete="off"
             onChange={inputHander}
           />
-          {showForm && (
-            <button
-              type="submit"
-            >
-              Add
-            </button>
-          )}
+          <button
+            type="submit"
+            className="add-product-form__button-add"
+          >
+            Add
+          </button>
         </form>
-      )}
+      </Modal>
     </>
   );
 };

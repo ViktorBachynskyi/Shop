@@ -1,0 +1,13 @@
+.edit-product-form {
+  display: flex;
+  flex-direction: column;
+
+  &__input-title {
+    font-size: 16px;
+    letter-spacing: -1px;
+  }
+
+  &__button-add {
+    margin-top: 18px;
+  }
+}

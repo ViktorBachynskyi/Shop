@@ -13,6 +13,13 @@
 
     margin-top: 5px;
   }
+
+  &__control-panel {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-bottom: 5px;
+  }
 }
 
 // form {
